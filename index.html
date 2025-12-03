@@ -417,6 +417,11 @@ h1 {
         </div>
     </div>
 
+    <audio id="audioSuave" loop>
+        <source src="abertura.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
     <script>
         let nomeUsuario = "";
         const limiteCliquesFinal = 5;
@@ -437,7 +442,7 @@ h1 {
             "eu.jpg", "lua.jpg", "beatriz.jpg", "kaio.jpg", "ali.jpg", "bern.jpg", 
             "eve.png", "dantas.png", "grabrielb.png", "geo.jpg", "gy.jpg", 
             "adri.jpg", "viegas.png", "lu.jpg", "mat.jpg", "melissa.jpg", "rh.jpg", 
-            "Ry.jpg", "sarah.jpg", "theo.jpg", "ana.png", "fernandes.png", 
+            "Ry.jpg", "Sarah.jpg", "theo.jpg", "ana.png", "fernandes.png", 
             "gabi.png", "pereira.png", "mariadejesus.jpg", "Sa.jpg", "laur.jpg",
             "manu.jpg" 
         ];
@@ -458,7 +463,7 @@ h1 {
             "Lançando a moda no corredor 👚", "Meu objetivo: passar sem recuperação ✅", "O que virou meme oficial da turma 🤣",
             "Empreendedor(a) nato(a) (vendia doce) 🍬", "Zero paciência para o recreio de 20 minutos ⏱️",
             "O que não entendia nada de Matemática 📉", "O que sentava perto da janela 🖼️",
-            "Formando 2024! 🥳", "Onde está a festa? 🎉", "O próximo Neymar/Marta ⚽️" 
+            "Formando 2025! 🥳", "Onde está a festa? 🎉", "O próximo Neymar/Marta ⚽️" 
         ];
 
         // VARIÁVEIS DE CONTROLE
@@ -482,6 +487,8 @@ h1 {
         const tituloIntermediario = document.getElementById('tituloIntermediario');
         const btnAnterior = document.getElementById('btnAnterior');
         const btnProximo = document.getElementById('btnProximo');
+        // NOVO: Referência ao áudio suave
+        const audioSuave = document.getElementById('audioSuave'); 
 
         // Modal
         const imageModal = document.getElementById('imageModal');
@@ -608,13 +615,22 @@ h1 {
             let novaPagina = paginaAtual + direcao;
             if (novaPagina >= 1 && novaPagina <= totalPaginas) mostrarPagina(novaPagina);
         }
-        
+
+        // NOVO: Função para iniciar a música suave (chamada APÓS a primeira interação)
+        function tocarMusicaSuave() {
+            audioSuave.volume = 0.5; // Volume ajustado
+            audioSuave.play().catch(e => console.log("Música suave bloqueada pelo navegador: ", e)); 
+        }
+
         // --- FLUXO DO SITE ---
         function iniciarSite() {
             const nome = nomeInput.value.trim();
             if (nome === "") { alert("Por favor, digite um nome!"); return; }
             nomeUsuario = nome;
             nomeFinalDisplay.textContent = nomeUsuario;
+            
+            // Inicia a música suave após a primeira interação do usuário
+            tocarMusicaSuave();
             
             introScreen.style.opacity = '0';
             setTimeout(() => {
@@ -639,6 +655,10 @@ h1 {
             setTimeout(() => {
                 telaIntermediaria.style.display = 'none';
             }, 500);
+            
+            // Pausa a música suave antes de iniciar a do final
+            audioSuave.pause(); 
+
             audioPlayer.play().catch(e => console.log("Play bloqueado pelo browser"));
             paginaFinal.style.display = 'flex';
             setTimeout(() => paginaFinal.style.opacity = '1', 50);
