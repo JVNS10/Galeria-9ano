@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria Interativa | 9º Ano</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+/* -------------------------- */
+/* VARIÁVEIS DE DESIGN (Clean & LIGHT GREEN) */
+/* -------------------------- */
+:root {
+    --fonte-principal: 'Poppins', sans-serif;
+    
+    /* Fundo SUAVE E VERDE/CIANO */
+    --bg-gradiente: linear-gradient(120deg, #d4f7e8 0%, #a2e8e8 100%); 
+    
+    /* Cores dos Elementos */
+    --cor-card: #ffffff;
+    --cor-texto: #4a4a4a;
+    --cor-titulo: #2c3e50;
+    
+    /* Cores do Botão */
+    --btn-inicial: #00796B; 
+    --btn-transicao-1: #96c93d; 
+    --btn-transicao-2: #00b09b; 
+    --btn-final: #ff4d4d; /* Vermelho para o último estágio */ 
+
+    /* Sombras */
+    --sombra-card: 0 10px 20px rgba(0,0,0,0.05);
+    --sombra-hover: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+body {
+    font-family: var(--fonte-principal);
+    background-image: var(--bg-gradiente); 
+    background-attachment: fixed;
+    background-size: cover;
+    color: var(--cor-texto);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* TELA DE INTRODUÇÃO & CONTEÚDO PRINCIPAL (GALERIA) */
+#introScreen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); z-index: 2000;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+}
+.intro-card {
+    background: white; padding: 40px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    text-align: center; max-width: 400px; width: 100%; animation: fadeInDown 0.8s ease;
+}
+.intro-card h2 { margin-top: 0; color: var(--cor-titulo); }
+.intro-input {
+    width: 100%; padding: 15px; margin: 20px 0; border: 2px solid #eee; border-radius: 10px;
+    font-family: var(--fonte-principal); font-size: 1rem; outline: none; transition: border-color 0.3s; box-sizing: border-box;
+}
+.intro-input:focus { border-color: var(--btn-inicial); }
+.btn-entrar {
+    background: var(--btn-inicial); color: white; border: none; padding: 12px 30px;
+    font-size: 1rem; border-radius: 50px; cursor: pointer; transition: all 0.2s; font-weight: 600;
+}
+.btn-entrar:hover {
+    transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4); 
+}
+
+#mainContent { display: none; opacity: 0; transition: opacity 1s ease; }
+header { text-align: center; padding: 40px 20px; }
+h1 {
+    font-weight: 800; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    font-size: 2.5rem; margin: 0;
+}
+.galeria {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px; max-width: 1200px; margin: 0 auto; padding: 20px; list-style: none;
+}
+.item-galeria {
+    background: var(--cor-card); border-radius: 15px; overflow: hidden;
+    box-shadow: var(--sombra-card); transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;
+}
+.item-galeria:hover { transform: translateY(-10px); box-shadow: var(--sombra-hover); }
+.item-galeria img {
+    width: 100%; height: 250px; object-fit: cover; display: block;
+}
+.item-galeria figcaption {
+    padding: 20px; font-weight: 600; color: var(--cor-texto); text-align: center;
+}
+
+/* Botões Padrão e de Transição */
+.container-botao { display: flex; justify-content: center; margin: 60px 0 100px 0; }
+.btn-padrao {
+    padding: 18px 40px; font-size: 1.1rem; font-weight: 600; font-family: var(--fonte-principal);
+    color: white; border: none; border-radius: 50px; cursor: pointer; outline: none;
+    background-color: var(--btn-inicial); box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-padrao:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 121, 107, 0.4); }
+.btn-padrao:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Estágios de Clique */
+#btnAtivarFinal.stage-1 { background-color: var(--btn-transicao-1); }
+#btnAtivarFinal.stage-2 { background-color: var(--btn-transicao-2); }
+#btnAtivarFinal.stage-final { background-color: var(--btn-final); box-shadow: 0 0 30px rgba(255, 77, 77, 0.6); } 
+
+/* Animações */
+.animacao-clique { transform: scale(0.9); }
+@keyframes pulseBoom {
+    0% { transform: scale(1); } 50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(52, 168, 83, 0.8); }
+    100% { transform: scale(1); }
+}
+.animacao-boom { animation: pulseBoom 0.6s ease-out; }
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+    0% { opacity: 0; transform: translateY(50px); } 100% { opacity: 1; transform: translateY(0); }
+}
+
+/* -------------------------- */
+/* TELA INTERMEDIÁRIA */
+/* -------------------------- */
+#telaIntermediaria {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: var(--bg-gradiente); 
+    z-index: 2500; display: none; flex-direction: column; justify-content: center; align-items: center;
+    color: var(--cor-texto); 
+    opacity: 0; transition: opacity 1s ease; padding: 20px;
+}
+
+.intermediaria-content {
+    max-width: 900px; width: 100%;
+    background: var(--cor-card); 
+    padding: 30px; border-radius: 15px;
+    box-shadow: var(--sombra-hover); 
+    animation: fadeInDown 0.8s ease;
+}
+
+#tituloIntermediario {
+    font-size: 2rem; 
+    color: var(--cor-titulo); 
+    margin-bottom: 20px; 
+}
+
+/* Container da Galeria de Bolinhas */
+#galeriaBolinhas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+    gap: 15px 5px; 
+    padding: 20px 0;
+    justify-content: center;
+}
+        
+/* Item Bolinha (Agora é o container da bolinha + legenda) */
+.bolinha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    padding: 10px 0; 
+}
+        
+.bolinha {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #e0f7fa; 
+    border: 3px solid #b2ebf2; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, background-color 0.2s;
+    overflow: hidden;
+    flex-shrink: 0; 
+}
+
+.bolinha img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Legenda para Bolinhas */
+.bolinha-legenda {
+    margin-top: 3px; 
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--cor-texto);
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    max-width: 100px; 
+}
+
+
+/* Estilos para navegação e botão final */
+.intermediaria-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap; 
+}
+
+.nav-buttons button {
+    background-color: var(--btn-inicial); 
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.nav-buttons button:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+}
+.nav-buttons button:hover:not(:disabled) {
+    background-color: #004d40;
+}
+
+#btnAtivarFinal {
+    order: 3; 
+}
+        
+/* -------------------------- */
+/* TELA FINAL (Good Ending) */
+/* -------------------------- */
+
+#paginaFinal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    /* Imagem de Fundo Padrão (Manter como URL externa ou ajustar para local) */
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b6/%28vila_missionaria%29_do_morro_olhando_em_dire%C3%A7%C3%A3o_para_posto_Hudson_-_panoramio.jpg');
+    background-size: cover; background-position: center; z-index: 3000; display: none; 
+    flex-direction: column; justify-content: center; align-items: center; text-align: center;
+    color: white; opacity: 0; transition: opacity 1s ease;
+}
+
+.final-content {
+    background: rgba(0, 0, 0, 0.4); 
+    padding: 40px; border-radius: 20px; 
+    backdrop-filter: blur(8px); 
+    max-width: 80%; margin-bottom: 30px; animation: slideUp 1s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); 
+}
+#paginaFinal h2 {
+    color: white; 
+    font-size: 3.5rem; margin-bottom: 20px; 
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 2px 2px 10px rgba(0,0,0,0.5);
+    line-height: 1.1; margin-top: 0;
+}
+#paginaFinal p { 
+    color: white; 
+    font-size: 1.5rem; font-weight: 300; 
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
+}
+.highlight-name { 
+    color: #ffd700; font-weight: 800; text-transform: uppercase; 
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.9);
+}
+.music-container { margin-top: 20px; opacity: 0.8; transition: opacity 0.3s; }
+.music-label { font-size: 0.9rem; margin-bottom: 5px; color: #ddd; }
+#audioPlayer {
+    border-radius: 10px; background: rgba(255, 255, 255, 0.2); padding: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 350px; max-width: 90vw;
+}
+
+/* MODAL VISUALIZADOR */
+#imageModal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); z-index: 4000; display: none;
+    justify-content: center; align-items: center; cursor: pointer;
+}
+.modal-content-container {
+    width: 90%; height: 90%; display: flex; justify-content: center;
+    align-items: center; position: relative;
+}
+#modalImage {
+    max-width: 100%; max-height: 100%; object-fit: contain; cursor: zoom-in;
+    transform: scale(1); transform-origin: 50% 50%; transition: transform 0.1s ease;
+}
+#btnCloseModal {
+    position: absolute; top: 20px; right: 20px; color: white; font-size: 40px;
+    font-weight: bold; cursor: pointer; text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    line-height: 1; transition: color 0.2s;
+}
+#btnCloseModal:hover { color: var(--btn-final); }
+
+/* Animações e Responsividade */
+@media (max-width: 768px) {
+    .intermediaria-footer { flex-direction: column; }
+    .nav-buttons { margin-bottom: 15px; }
+    #btnAtivarFinal { margin-top: 15px; order: 1; }
+    .bolinha { width: 80px; height: 80px; }
+    .bolinha-container { width: auto; }
+    #galeriaBolinhas { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+    .bolinha-legenda { max-width: 80px; }
+}
+    </style>
+</head>
+<body>
+
+    <div id="introScreen">
+        <div class="intro-card">
+            <h2>Bem-vindo(a)!</h2>
+            <p>Antes de começarmos, como devemos te chamar?</p>
+            <input type="text" id="nomeInput" class="intro-input" placeholder="Digite seu nome aqui..." autocomplete="off">
+            <button class="btn-entrar" onclick="iniciarSite()">Entrar na Galeria</button>
+        </div>
+    </div>
+
+    <div id="mainContent">
+        <header>
+            <h1>Galeria do 9 ano</h1>
+            <p style="color: white; opacity: 0.9;">Explore e descubra lembranças.</p>
+        </header>
+
+        <main>
+            <ul class="galeria">
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="interclasse.jpg" alt="Inspiração">
+                    <figcaption>Inspiração</figcaption>
+                </li>
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="meninaS.jpg" alt="Criatividade">
+                    <figcaption>Criatividade</figcaption>
+                </li>
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="galeria.jpg" alt="Arquitetura">
+                    <figcaption>União</figcaption>
+                </li>
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="matheustirando.jpg" alt="Natureza">
+                    <figcaption>Cuidado</figcaption>
+                </li>
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="alesandra.jpg" alt="Arte Abstrata">
+                    <figcaption>Carinho</figcaption>
+                </li>
+                <li class="item-galeria" onclick="openModal(this)">
+                    <img src="crias.jpg" alt="Estilo de Vida">
+                    <figcaption>Estilo de Vida</figcaption>
+                </li>
+            </ul>
+
+            <div class="container-botao">
+                <button id="btnProximaPagina" class="btn-padrao" onclick="passarParaIntermediaria()">
+                    Continuar
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div id="telaIntermediaria">
+        <div class="intermediaria-content">
+            <h2 id="tituloIntermediario">Alunos do 9º (Página 1/3)</h2>
+            
+            <div id="galeriaBolinhas">
+                </div>
+
+            <div class="intermediaria-footer">
+                <p style="color: var(--cor-texto);">Seus colegas de sala.(botão 'Próxima Etapa' precisa de 5 cliques)</p>
+                
+                <div class="nav-buttons">
+                    <button id="btnAnterior" onclick="mudarPagina(-1)" disabled>← Anterior</button>
+                    <button id="btnProximo" onclick="mudarPagina(1)">Próximo →</button>
+                </div>
+                
+                <button id="btnAtivarFinal" class="btn-padrao">
+                    Próxima Etapa
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="imageModal">
+        <span id="btnCloseModal" onclick="closeModal()">&times;</span>
+        <div class="modal-content-container">
+            <img id="modalImage" src="" alt="Imagem Ampliada">
+        </div>
+    </div>
+
+    <div id="paginaFinal">
+        <div class="final-content">
+            <h2>GOOD ENDING</h2>
+            <p>Parabéns, <span id="nomeFinal" class="highlight-name">Visitante</span>!</p>
+            <p>Você encontrou o final feliz,Lembre-se:Não chore porque acabou, sorria porque aconteceu.</p> 
+        </div>
+
+        <div class="music-container">
+            <div class="music-label">♫ Amar Como Você - (Arquivo Local)</div>
+            
+            <audio id="audioPlayer" loop controls>
+                <source src="good-ending.mp3" type="audio/mpeg">
+                Seu navegador não suporta o elemento de áudio.
+            </audio>
+        </div>
+    </div>
+
+    <script>
+        let nomeUsuario = "";
+        const limiteCliquesFinal = 5;
+        let contadorCliquesFinal = 0; 
+        
+        // LISTA DE NOMES ATUALIZADA (28 nomes)
+        const nomesBolinhas = [
+            "João Vitor", "Luan", "Beatriz", "Kaio", "Alicia", "Bernardo", 
+            "Evelyn", "Gabriel Dantas", "Gabriel Barbosa", "Georgia", "Gyzelly", 
+            "Adriano", "Laura Viegas", "Luana", "Matheus", "Melissa", "Rhuan", 
+            "Ryan", "Sarah Lima", "Theo", "Ana Clara", "Maria Eduarda Fernandes", 
+            "Gabriela", "Maria Pereira", "Maria de Jesus", "Sarah Oliveira", "Laurinha",
+            "Manuella" 
+        ];
+        
+        // AS IMAGENS PRECISAM EXISTIR NAS PASTAS LOCAIS (img/...)
+        const urlsImagens = [
+            "eu.jpg", "lua.jpg", "beatriz.jpg", "kaio.jpg", "ali.jpg", "bern.jpg", 
+            "eve.png", "dantas.png", "grabrielb.png", "geo.jpg", "gy.jpg", 
+            "adri.jpg", "viegas.png", "lu.jpg", "mat.jpg", "melissa.jpg", "rh.jpg", 
+            "Ry.jpg", "Sah.jpg", "theo.jpg", "ana.png", "fernandes.png", 
+            "gabi.png", "pereira.png", "mariadejesus.jpg", "Sa.jpg", "laur.jpg",
+            "manu.jpg" 
+        ];
+
+        // VARIÁVEIS DE CONTROLE
+        const totalBolinhas = nomesBolinhas.length; 
+        const bolinhasPorPagina = 13;
+        const totalPaginas = Math.ceil(totalBolinhas / bolinhasPorPagina); 
+        let paginaAtual = 1;
+
+        // Elementos principais
+        const introScreen = document.getElementById('introScreen');
+        const mainContent = document.getElementById('mainContent');
+        const nomeInput = document.getElementById('nomeInput');
+        const nomeFinalDisplay = document.getElementById('nomeFinal');
+        const botaoGaleria = document.getElementById('btnProximaPagina');
+        const botaoFinal = document.getElementById('btnAtivarFinal'); 
+        const paginaFinal = document.getElementById('paginaFinal');
+        const audioPlayer = document.getElementById('audioPlayer'); 
+        const telaIntermediaria = document.getElementById('telaIntermediaria');
+
+        // Elementos da galeria de bolinhas
+        const galeriaBolinhas = document.getElementById('galeriaBolinhas');
+        const tituloIntermediario = document.getElementById('tituloIntermediario');
+        const btnAnterior = document.getElementById('btnAnterior');
+        const btnProximo = document.getElementById('btnProximo');
+
+        // Elementos do Modal
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        let currentScale = 1;
+
+
+        // --- FUNÇÕES DO MODAL ---
+        function openModal(itemGaleria) {
+            const imgSrc = itemGaleria.querySelector('img').src;
+            modalImage.src = imgSrc;
+            imageModal.style.display = 'flex';
+            currentScale = 1;
+            modalImage.style.transform = `scale(${currentScale})`;
+            modalImage.style.cursor = 'zoom-in';
+            modalImage.style.objectFit = 'contain';
+        }
+
+        function closeModal() {
+            imageModal.style.display = 'none';
+            modalImage.style.transform = 'scale(1)';
+            currentScale = 1;
+            modalImage.style.cursor = 'zoom-in';
+            modalImage.style.objectFit = 'contain';
+        }
+
+        function handleZoom(event) {
+            event.stopPropagation();
+            if (currentScale === 1) {
+                currentScale = 2;
+                modalImage.style.objectFit = 'none'; 
+                modalImage.style.cursor = 'grab';
+                
+                const rect = modalImage.getBoundingClientRect();
+                const x = (event.clientX - rect.left) / rect.width;
+                const y = (event.clientY - rect.top) / rect.height;
+                modalImage.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+                modalImage.style.transform = `scale(${currentScale})`;
+            } else {
+                currentScale = 1;
+                modalImage.style.transform = `scale(${currentScale})`;
+                modalImage.style.cursor = 'zoom-in';
+                modalImage.style.objectFit = 'contain';
+                modalImage.style.transformOrigin = '50% 50%';
+            }
+        }
+        
+        modalImage.addEventListener('click', handleZoom);
+        imageModal.addEventListener('click', function(event) {
+            if (event.target === imageModal) {
+                closeModal();
+            }
+        });
+
+        // --- LÓGICA DA GALERIA DE BOLINHAS ---
+
+        function gerarBolinhas() {
+            let htmlBolinhas = '';
+            for (let i = 0; i < totalBolinhas; i++) {
+                const imagemSrc = urlsImagens[i]; 
+                const nomePessoa = nomesBolinhas[i]; 
+                htmlBolinhas += `
+                    <div class="bolinha-container bolinha-item">
+                        <div class="bolinha">
+                            <img src="${imagemSrc}" alt="${nomePessoa}">
+                        </div>
+                        <span class="bolinha-legenda">${nomePessoa}</span>
+                    </div>
+                `;
+            }
+            galeriaBolinhas.innerHTML = htmlBolinhas;
+        }
+        
+        function mostrarPagina(pagina) {
+            paginaAtual = pagina;
+
+            const inicio = (pagina - 1) * bolinhasPorPagina;
+            const fim = pagina * bolinhasPorPagina;
+
+            const bolinhaContainers = document.querySelectorAll('.bolinha-item');
+
+            bolinhaContainers.forEach((container, index) => {
+                container.style.display = (index >= inicio && index < fim) ? 'flex' : 'none';
+            });
+
+            tituloIntermediario.textContent = `Alunos do 9º (Página ${paginaAtual}/${totalPaginas})`;
+
+            btnAnterior.disabled = paginaAtual === 1;
+            btnProximo.disabled = paginaAtual === totalPaginas;
+        }
+
+        function mudarPagina(direcao) {
+            let novaPagina = paginaAtual + direcao;
+            if (novaPagina >= 1 && novaPagina <= totalPaginas) {
+                mostrarPagina(novaPagina);
+            }
+        }
+        
+        // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
+        
+        function iniciarSite() {
+            const nome = nomeInput.value.trim();
+            if (nome === "") {
+                alert("Por favor, digite um nome para continuar!");
+                return;
+            }
+            nomeUsuario = nome;
+            nomeFinalDisplay.textContent = nomeUsuario;
+            
+            introScreen.style.opacity = '0';
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                setTimeout(() => mainContent.style.opacity = '1', 50);
+            }, 500);
+        }
+        
+        function passarParaIntermediaria() {
+            botaoGaleria.disabled = true;
+            mainContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                mainContent.style.display = 'none';
+                telaIntermediaria.style.display = 'flex';
+                setTimeout(() => telaIntermediaria.style.opacity = '1', 50);
+            }, 500);
+        }
+
+        function ativarGoodEnding() {
+            telaIntermediaria.style.opacity = '0';
+            setTimeout(() => {
+                telaIntermediaria.style.display = 'none';
+            }, 500);
+
+            // Tenta iniciar a música
+            audioPlayer.play().catch(error => {
+                console.warn("Autoplay bloqueado. O usuário precisará interagir com o player.", error);
+            });
+
+            paginaFinal.style.display = 'flex';
+            setTimeout(() => paginaFinal.style.opacity = '1', 50);
+            
+            window.scrollTo(0,0);
+        }
+
+        function lidarComCliqueFinal() {
+            if (contadorCliquesFinal >= limiteCliquesFinal) {
+                return; // Evita cliques após o limite
+            }
+
+            botaoFinal.classList.add('animacao-clique');
+            setTimeout(() => botaoFinal.classList.remove('animacao-clique'), 150);
+
+            contadorCliquesFinal++;
+            
+            botaoFinal.classList.remove('stage-1', 'stage-2', 'stage-final', 'animacao-boom');
+            
+            switch (contadorCliquesFinal) {
+                case 1:
+                    botaoFinal.classList.add('stage-1');
+                    botaoFinal.textContent = `Próxima Etapa (1/${limiteCliquesFinal})`;
+                    break;
+                case 2:
+                    botaoFinal.classList.add('stage-2');
+                    botaoFinal.textContent = `Próxima Etapa (2/${limiteCliquesFinal})`;
+                    break;
+                case 3:
+                    botaoFinal.classList.add('stage-final');
+                    botaoFinal.classList.add('animacao-boom');
+                    botaoFinal.textContent = `Próxima Etapa (3/${limiteCliquesFinal}) - SURPRESA!`;
+                    setTimeout(() => botaoFinal.classList.remove('animacao-boom'), 600);
+                    break;
+                case 4:
+                    botaoFinal.classList.add('stage-final');
+                    botaoFinal.textContent = `Próxima Etapa (4/${limiteCliquesFinal}) - QUASE LÁ!`;
+                    break;
+                case limiteCliquesFinal: // 5º clique
+                    botaoFinal.disabled = true;
+                    botaoFinal.textContent = "Carregando Final...";
+                    ativarGoodEnding();
+                    break;
+            }
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            gerarBolinhas();
+            mostrarPagina(1);
+            botaoFinal.addEventListener('click', lidarComCliqueFinal);
+            nomeInput.addEventListener("keypress", (e) => { if(e.key==="Enter") iniciarSite(); });
+        });
+    </script>
+</body>
+
+</html>
