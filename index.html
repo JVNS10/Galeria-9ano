@@ -43,7 +43,7 @@ body {
     overflow-x: hidden;
 }
 
-/* TELA DE INTRODUÇÃO & CONTEÚDO PRINCIPAL (GALERIA) */
+/* TELA DE INTRODUÇÃO */
 #introScreen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); z-index: 2000;
@@ -67,6 +67,7 @@ body {
     transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 121, 107, 0.4); 
 }
 
+/* CONTEÚDO PRINCIPAL (GALERIA GERAL) */
 #mainContent { display: none; opacity: 0; transition: opacity 1s ease; }
 header { text-align: center; padding: 40px 20px; }
 h1 {
@@ -89,7 +90,7 @@ h1 {
     padding: 20px; font-weight: 600; color: var(--cor-texto); text-align: center;
 }
 
-/* Botões Padrão e de Transição */
+/* Botões Padrão */
 .container-botao { display: flex; justify-content: center; margin: 60px 0 100px 0; }
 .btn-padrao {
     padding: 18px 40px; font-size: 1.1rem; font-weight: 600; font-family: var(--fonte-principal);
@@ -100,7 +101,7 @@ h1 {
 .btn-padrao:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 121, 107, 0.4); }
 .btn-padrao:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* Estágios de Clique */
+/* Estágios de Clique Final */
 #btnAtivarFinal.stage-1 { background-color: var(--btn-transicao-1); }
 #btnAtivarFinal.stage-2 { background-color: var(--btn-transicao-2); }
 #btnAtivarFinal.stage-final { background-color: var(--btn-final); box-shadow: 0 0 30px rgba(255, 77, 77, 0.6); } 
@@ -120,7 +121,7 @@ h1 {
 }
 
 /* -------------------------- */
-/* TELA INTERMEDIÁRIA */
+/* TELA INTERMEDIÁRIA (BOLINHAS) */
 /* -------------------------- */
 #telaIntermediaria {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -139,12 +140,9 @@ h1 {
 }
 
 #tituloIntermediario {
-    font-size: 2rem; 
-    color: var(--cor-titulo); 
-    margin-bottom: 20px; 
+    font-size: 2rem; color: var(--cor-titulo); margin-bottom: 20px; 
 }
 
-/* Container da Galeria de Bolinhas */
 #galeriaBolinhas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
@@ -152,114 +150,129 @@ h1 {
     padding: 20px 0;
     justify-content: center;
 }
-        
-/* Item Bolinha (Agora é o container da bolinha + legenda) */
+
 .bolinha-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 100%;
-    padding: 10px 0; 
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    width: 100%; padding: 10px 0; position: relative;
+    transition: transform 0.3s ease;
 }
-        
+
 .bolinha {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #e0f7fa; 
-    border: 3px solid #b2ebf2; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100px; height: 100px; border-radius: 50%;
+    background-color: #e0f7fa; border: 3px solid #b2ebf2; 
+    display: flex; justify-content: center; align-items: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, background-color 0.2s;
-    overflow: hidden;
-    flex-shrink: 0; 
+    overflow: hidden; flex-shrink: 0; 
 }
 
 .bolinha img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
 }
 
-/* Legenda para Bolinhas */
 .bolinha-legenda {
-    margin-top: 3px; 
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--cor-texto);
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis; 
-    max-width: 100px; 
+    margin-top: 3px; font-size: 0.85rem; font-weight: 400; color: var(--cor-texto);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; 
 }
 
+/* --- INTERATIVIDADE MANEIRA (SPOTLIGHT & BUBBLES) --- */
 
-/* Estilos para navegação e botão final */
-.intermediaria-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    flex-wrap: wrap; 
+/* 1. Efeito Spotlight (Holofote) */
+/* Quando passar o mouse na galeria, apaga todos */
+#galeriaBolinhas:hover .bolinha-container {
+    opacity: 0.4;
+    filter: blur(2px) grayscale(60%);
+    transform: scale(0.95);
+    transition: all 0.4s ease;
 }
-
-.nav-buttons button {
-    background-color: var(--btn-inicial); 
-    padding: 10px 20px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
+/* Quando passar o mouse em UM específico, acende ele */
+#galeriaBolinhas .bolinha-container:hover {
+    opacity: 1;
+    filter: blur(0) grayscale(0%);
+    transform: scale(1.15) translateY(-10px);
+    z-index: 10;
     cursor: pointer;
-    transition: background-color 0.2s;
-}
-.nav-buttons button:disabled {
-    background-color: #b0b0b0;
-    cursor: not-allowed;
-}
-.nav-buttons button:hover:not(:disabled) {
-    background-color: #004d40;
 }
 
-#btnAtivarFinal {
-    order: 3; 
+/* 2. Balão de Frase (Speech Bubble) */
+.frase-bubble {
+    position: absolute;
+    bottom: 85%; /* Acima da bolinha */
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    background: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    font-size: 0.8rem;
+    color: #333;
+    font-weight: 600;
+    width: 140px;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    z-index: 20;
+    border: 2px solid var(--btn-inicial);
 }
+.frase-bubble::after {
+    content: ''; position: absolute; top: 100%; left: 50%; margin-left: -8px;
+    border-width: 8px; border-style: solid;
+    border-color: var(--btn-inicial) transparent transparent transparent;
+}
+/* Classe ativada via JS */
+.bolinha-container.ativa .frase-bubble {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+    bottom: 110%; /* Sobe um pouquinho */
+}
+
+/* 3. Animação de Partículas (Emojis) */
+.particle {
+    position: absolute; pointer-events: none;
+    animation: floatUp 1s ease-out forwards;
+    font-size: 1.2rem; z-index: 15;
+}
+@keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-60px) scale(1.5) rotate(20deg); opacity: 0; }
+}
+
+
+.intermediaria-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 20px; flex-wrap: wrap; 
+}
+.nav-buttons button {
+    background-color: var(--btn-inicial); padding: 10px 20px; margin: 0 5px;
+    border: none; border-radius: 10px; color: white; font-weight: 600;
+    cursor: pointer; transition: background-color 0.2s;
+}
+.nav-buttons button:disabled { background-color: #b0b0b0; cursor: not-allowed; }
+.nav-buttons button:hover:not(:disabled) { background-color: #004d40; }
+#btnAtivarFinal { order: 3; }
         
 /* -------------------------- */
 /* TELA FINAL (Good Ending) */
 /* -------------------------- */
-
 #paginaFinal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    /* Imagem de Fundo Padrão (Manter como URL externa ou ajustar para local) */
-    background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b6/%28vila_missionaria%29_do_morro_olhando_em_dire%C3%A7%C3%A3o_para_posto_Hudson_-_panoramio.jpg');
+    /* Imagem de fundo opcional ou cor solida */
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://upload.wikimedia.org/wikipedia/commons/b/b6/%28vila_missionaria%29_do_morro_olhando_em_dire%C3%A7%C3%A3o_para_posto_Hudson_-_panoramio.jpg');
     background-size: cover; background-position: center; z-index: 3000; display: none; 
     flex-direction: column; justify-content: center; align-items: center; text-align: center;
     color: white; opacity: 0; transition: opacity 1s ease;
 }
-
 .final-content {
-    background: rgba(0, 0, 0, 0.4); 
-    padding: 40px; border-radius: 20px; 
-    backdrop-filter: blur(8px); 
-    max-width: 80%; margin-bottom: 30px; animation: slideUp 1s ease;
-    border: 1px solid rgba(255, 255, 255, 0.3); 
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); 
+    background: rgba(0, 0, 0, 0.4); padding: 40px; border-radius: 20px; 
+    backdrop-filter: blur(8px); max-width: 80%; margin-bottom: 30px; animation: slideUp 1s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); 
 }
 #paginaFinal h2 {
-    color: white; 
-    font-size: 3.5rem; margin-bottom: 20px; 
+    color: white; font-size: 3.5rem; margin-bottom: 20px; 
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 2px 2px 10px rgba(0,0,0,0.5);
     line-height: 1.1; margin-top: 0;
 }
 #paginaFinal p { 
-    color: white; 
-    font-size: 1.5rem; font-weight: 300; 
+    color: white; font-size: 1.5rem; font-weight: 300; 
     text-shadow: 0 0 3px rgba(255, 255, 255, 0.7);
 }
 .highlight-name { 
@@ -294,7 +307,6 @@ h1 {
 }
 #btnCloseModal:hover { color: var(--btn-final); }
 
-/* Animações e Responsividade */
 @media (max-width: 768px) {
     .intermediaria-footer { flex-direction: column; }
     .nav-buttons { margin-bottom: 15px; }
@@ -319,34 +331,34 @@ h1 {
 
     <div id="mainContent">
         <header>
-            <h1>Galeria do 9 ano</h1>
+            <h1>Galeria do 9º Ano</h1>
             <p style="color: white; opacity: 0.9;">Explore e descubra lembranças.</p>
         </header>
 
         <main>
             <ul class="galeria">
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="interclasse.jpg" alt="Inspiração">
+                    <img src="interclasse.jpg" alt="Interclasse">
                     <figcaption>Inspiração</figcaption>
                 </li>
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="meninaS.jpg" alt="Criatividade">
+                    <img src="meninaS.jpg" alt="Meninas">
                     <figcaption>Criatividade</figcaption>
                 </li>
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="galeria.jpg" alt="Arquitetura">
+                    <img src="galeria.jpg" alt="Galeria">
                     <figcaption>União</figcaption>
                 </li>
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="matheustirando.jpg" alt="Natureza">
+                    <img src="matheustirando.jpg" alt="Matheus">
                     <figcaption>Cuidado</figcaption>
                 </li>
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="alesandra.jpg" alt="Arte Abstrata">
+                    <img src="alesandra.jpg" alt="Alessandra">
                     <figcaption>Carinho</figcaption>
                 </li>
                 <li class="item-galeria" onclick="openModal(this)">
-                    <img src="crias.jpg" alt="Estilo de Vida">
+                    <img src="crias.jpg" alt="Os Crias">
                     <figcaption>Estilo de Vida</figcaption>
                 </li>
             </ul>
@@ -367,7 +379,7 @@ h1 {
                 </div>
 
             <div class="intermediaria-footer">
-                <p style="color: var(--cor-texto);">Seus colegas de sala.(botão 'Próxima Etapa' precisa de 5 cliques)</p>
+                <p style="color: var(--cor-texto); font-size: 0.9rem;">Clique nos alunos para ver o status!</p>
                 
                 <div class="nav-buttons">
                     <button id="btnAnterior" onclick="mudarPagina(-1)" disabled>← Anterior</button>
@@ -392,7 +404,7 @@ h1 {
         <div class="final-content">
             <h2>GOOD ENDING</h2>
             <p>Parabéns, <span id="nomeFinal" class="highlight-name">Visitante</span>!</p>
-            <p>Você encontrou o final feliz,Lembre-se:Não chore porque acabou, sorria porque aconteceu.</p> 
+            <p>Você encontrou o final feliz.<br>Lembre-se: Não chore porque acabou, sorria porque aconteceu.</p> 
         </div>
 
         <div class="music-container">
@@ -409,8 +421,8 @@ h1 {
         let nomeUsuario = "";
         const limiteCliquesFinal = 5;
         let contadorCliquesFinal = 0; 
-        
-        // LISTA DE NOMES ATUALIZADA (28 nomes)
+
+        // --- DADOS DOS ALUNOS (28 nomes listados) ---
         const nomesBolinhas = [
             "João Vitor", "Luan", "Beatriz", "Kaio", "Alicia", "Bernardo", 
             "Evelyn", "Gabriel Dantas", "Gabriel Barbosa", "Georgia", "Gyzelly", 
@@ -419,24 +431,44 @@ h1 {
             "Gabriela", "Maria Pereira", "Maria de Jesus", "Sarah Oliveira", "Laurinha",
             "Manuella" 
         ];
-        
-        // AS IMAGENS PRECISAM EXISTIR NAS PASTAS LOCAIS (img/...)
+
+        // --- IMAGENS (Certifique-se que as imagens existem na pasta) ---
         const urlsImagens = [
             "eu.jpg", "lua.jpg", "beatriz.jpg", "kaio.jpg", "ali.jpg", "bern.jpg", 
             "eve.png", "dantas.png", "grabrielb.png", "geo.jpg", "gy.jpg", 
             "adri.jpg", "viegas.png", "lu.jpg", "mat.jpg", "melissa.jpg", "rh.jpg", 
-            "Ry.jpg", "Sarah2.jpg", "theo.jpg", "Ana.png", "fernandes.png", 
+            "Ry.jpg", "Sarah.jpg", "theo.jpg", "ana.png", "fernandes.png", 
             "gabi.png", "pereira.png", "mariadejesus.jpg", "Sa.jpg", "laur.jpg",
             "manu.jpg" 
         ];
 
+        // --- 40 FRASES ÚNICAS (Mais opções para a turma) ---
+        const frasesUnicas = [
+            "O inimigo do fim ✌️", "Só sei que nada sei...", "Futuro presidente 👔",
+            "Presente, fessora! 🙋", "Vai deixar saudades 😢", "Mestre da soneca 😴",
+            "Rei/Rainha do TikTok 📱", "Sempre com fome 🍔", "Zero paciência para a aula das 7h 🥱",
+            "A lenda viva ✨", "Rindo de nervoso 😅", "Cadê meu carregador? 🔌",
+            "Não estudei, mas gabaritei 🤓", "Vou sentir falta da merenda 🍎", "O rei do fundão 👑",
+            "Atrasado (como sempre) 🏃", "Eu ouvi fofoca? 🫢", "Só vim pela chamada 📝",
+            "Mestre na arte de enrolar o trabalho 😎", "Calma, é para hoje? 📅", "O mestre do ctrl+c, ctrl+v 😇",
+            "O terror da coordenação 😈", "Especialista em mímica 🎭", "Rainha/rei do drama, mas com amor ❤️",
+            "Só tiro 10 (em dormir) 💯", "Aposentado(a) aos 15 👴", "Fã número 1 do recreio 🥪",
+            "Rindo pra não chorar 😂", "Até que enfim acabou! 🎓", "Próxima parada: o ensino médio (se Deus quiser) 🙏",
+            "Chegou a hora de sumir por três meses 😶‍🌫️", "O que chorou no último dia. 😭", "Zero paciência para a aula das 7h. 🥱",
+            "Lançando a moda no corredor 👚", "Meu objetivo: passar sem recuperação ✅", "O que virou meme oficial da turma 🤣",
+            "Empreendedor(a) nato(a) (vendia doce) 🍬", "Zero paciência para o recreio de 20 minutos ⏱️",
+            "O que não entendia nada de Matemática 📉", "O que sentava perto da janela 🖼️",
+            "Formando 2024! 🥳", "Onde está a festa? 🎉", "O próximo Neymar/Marta ⚽️" 
+        ];
+
         // VARIÁVEIS DE CONTROLE
         const totalBolinhas = nomesBolinhas.length; 
-        const bolinhasPorPagina = 13;
+        const bolinhasPorPagina = 12; 
         const totalPaginas = Math.ceil(totalBolinhas / bolinhasPorPagina); 
         let paginaAtual = 1;
+        let frasesAtribuidas = []; 
 
-        // Elementos principais
+        // Elementos do DOM
         const introScreen = document.getElementById('introScreen');
         const mainContent = document.getElementById('mainContent');
         const nomeInput = document.getElementById('nomeInput');
@@ -446,18 +478,24 @@ h1 {
         const paginaFinal = document.getElementById('paginaFinal');
         const audioPlayer = document.getElementById('audioPlayer'); 
         const telaIntermediaria = document.getElementById('telaIntermediaria');
-
-        // Elementos da galeria de bolinhas
         const galeriaBolinhas = document.getElementById('galeriaBolinhas');
         const tituloIntermediario = document.getElementById('tituloIntermediario');
         const btnAnterior = document.getElementById('btnAnterior');
         const btnProximo = document.getElementById('btnProximo');
 
-        // Elementos do Modal
+        // Modal
         const imageModal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         let currentScale = 1;
 
+        // Função auxiliar para embaralhar um array (Algoritmo Fisher-Yates)
+        function embaralharArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
         // --- FUNÇÕES DO MODAL ---
         function openModal(itemGaleria) {
@@ -478,13 +516,12 @@ h1 {
             modalImage.style.objectFit = 'contain';
         }
 
-        function handleZoom(event) {
+        modalImage.addEventListener('click', (event) => {
             event.stopPropagation();
             if (currentScale === 1) {
                 currentScale = 2;
                 modalImage.style.objectFit = 'none'; 
                 modalImage.style.cursor = 'grab';
-                
                 const rect = modalImage.getBoundingClientRect();
                 const x = (event.clientX - rect.left) / rect.width;
                 const y = (event.clientY - rect.top) / rect.height;
@@ -497,24 +534,26 @@ h1 {
                 modalImage.style.objectFit = 'contain';
                 modalImage.style.transformOrigin = '50% 50%';
             }
-        }
-        
-        modalImage.addEventListener('click', handleZoom);
-        imageModal.addEventListener('click', function(event) {
-            if (event.target === imageModal) {
-                closeModal();
-            }
         });
+        imageModal.addEventListener('click', (e) => { if (e.target === imageModal) closeModal(); });
 
-        // --- LÓGICA DA GALERIA DE BOLINHAS ---
-
+        // --- LÓGICA DA GALERIA DE BOLINHAS (COM FRASES ÚNICAS ALEATÓRIAS) ---
         function gerarBolinhas() {
+            // Embaralha as frases e seleciona o número necessário
+            let frasesEmbaralhadas = embaralharArray([...frasesUnicas]); 
+            frasesAtribuidas = frasesEmbaralhadas.slice(0, totalBolinhas);
+            
             let htmlBolinhas = '';
             for (let i = 0; i < totalBolinhas; i++) {
-                const imagemSrc = urlsImagens[i]; 
-                const nomePessoa = nomesBolinhas[i]; 
+                const imagemSrc = urlsImagens[i] || 'https://via.placeholder.com/100';
+                const nomePessoa = nomesBolinhas[i];
+                
+                // Pega a frase ATRIBUÍDA ALEATORIAMENTE E ÚNICA para esta bolinha nesta sessão
+                const fraseUnica = frasesAtribuidas[i] || "Formando 2024! 🎓"; 
+
                 htmlBolinhas += `
-                    <div class="bolinha-container bolinha-item">
+                    <div class="bolinha-container bolinha-item" onclick="interagirAluno(this)">
+                        <div class="frase-bubble">${fraseUnica}</div>
                         <div class="bolinha">
                             <img src="${imagemSrc}" alt="${nomePessoa}">
                         </div>
@@ -524,40 +563,56 @@ h1 {
             }
             galeriaBolinhas.innerHTML = htmlBolinhas;
         }
+
+        function interagirAluno(elemento) {
+            // Remove 'ativa' de outras bolinhas para fechar outros balões
+            document.querySelectorAll('.bolinha-container').forEach(el => {
+                if(el !== elemento) el.classList.remove('ativa');
+            });
+            // Alterna a classe 'ativa' na bolinha clicada (mostra/esconde o balão)
+            elemento.classList.toggle('ativa');
+            // Cria a explosão de emojis
+            criarExplosaoEmojis(elemento);
+        }
+
+        function criarExplosaoEmojis(container) {
+            const emojis = ['🎓', '✨', '🎉', '📚', '😎', '✌️', '🔥'];
+            for (let i = 0; i < 6; i++) {
+                const span = document.createElement('span');
+                span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                span.className = 'particle';
+                const randomX = (Math.random() - 0.5) * 60;
+                const randomY = (Math.random() - 0.5) * 60;
+                span.style.left = `calc(50% + ${randomX}px)`;
+                span.style.top = `calc(50% + ${randomY}px)`;
+                container.appendChild(span);
+                setTimeout(() => span.remove(), 1000);
+            }
+        }
         
         function mostrarPagina(pagina) {
             paginaAtual = pagina;
-
             const inicio = (pagina - 1) * bolinhasPorPagina;
             const fim = pagina * bolinhasPorPagina;
-
             const bolinhaContainers = document.querySelectorAll('.bolinha-item');
 
             bolinhaContainers.forEach((container, index) => {
                 container.style.display = (index >= inicio && index < fim) ? 'flex' : 'none';
             });
-
             tituloIntermediario.textContent = `Alunos do 9º (Página ${paginaAtual}/${totalPaginas})`;
-
             btnAnterior.disabled = paginaAtual === 1;
             btnProximo.disabled = paginaAtual === totalPaginas;
         }
 
         function mudarPagina(direcao) {
             let novaPagina = paginaAtual + direcao;
-            if (novaPagina >= 1 && novaPagina <= totalPaginas) {
-                mostrarPagina(novaPagina);
-            }
+            if (novaPagina >= 1 && novaPagina <= totalPaginas) mostrarPagina(novaPagina);
         }
         
-        // --- FUNÇÕES DE NAVEGAÇÃO E LÓGICA ---
-        
+        // --- FLUXO DO SITE ---
         function iniciarSite() {
             const nome = nomeInput.value.trim();
-            if (nome === "") {
-                alert("Por favor, digite um nome para continuar!");
-                return;
-            }
+            if (nome === "") { alert("Por favor, digite um nome!"); return; }
             nomeUsuario = nome;
             nomeFinalDisplay.textContent = nomeUsuario;
             
@@ -572,7 +627,6 @@ h1 {
         function passarParaIntermediaria() {
             botaoGaleria.disabled = true;
             mainContent.style.opacity = '0';
-            
             setTimeout(() => {
                 mainContent.style.display = 'none';
                 telaIntermediaria.style.display = 'flex';
@@ -585,58 +639,38 @@ h1 {
             setTimeout(() => {
                 telaIntermediaria.style.display = 'none';
             }, 500);
-
-            // Tenta iniciar a música
-            audioPlayer.play().catch(error => {
-                console.warn("Autoplay bloqueado. O usuário precisará interagir com o player.", error);
-            });
-
+            audioPlayer.play().catch(e => console.log("Play bloqueado pelo browser"));
             paginaFinal.style.display = 'flex';
             setTimeout(() => paginaFinal.style.opacity = '1', 50);
-            
-            window.scrollTo(0,0);
         }
 
         function lidarComCliqueFinal() {
-            if (contadorCliquesFinal >= limiteCliquesFinal) {
-                return; // Evita cliques após o limite
-            }
-
+            if (contadorCliquesFinal >= limiteCliquesFinal) return;
             botaoFinal.classList.add('animacao-clique');
             setTimeout(() => botaoFinal.classList.remove('animacao-clique'), 150);
-
             contadorCliquesFinal++;
-            
             botaoFinal.classList.remove('stage-1', 'stage-2', 'stage-final', 'animacao-boom');
             
-            switch (contadorCliquesFinal) {
-                case 1:
-                    botaoFinal.classList.add('stage-1');
-                    botaoFinal.textContent = `Próxima Etapa (1/${limiteCliquesFinal})`;
-                    break;
-                case 2:
-                    botaoFinal.classList.add('stage-2');
-                    botaoFinal.textContent = `Próxima Etapa (2/${limiteCliquesFinal})`;
-                    break;
-                case 3:
-                    botaoFinal.classList.add('stage-final');
-                    botaoFinal.classList.add('animacao-boom');
-                    botaoFinal.textContent = `Próxima Etapa (3/${limiteCliquesFinal}) - SURPRESA!`;
-                    setTimeout(() => botaoFinal.classList.remove('animacao-boom'), 600);
-                    break;
-                case 4:
-                    botaoFinal.classList.add('stage-final');
-                    botaoFinal.textContent = `Próxima Etapa (4/${limiteCliquesFinal}) - QUASE LÁ!`;
-                    break;
-                case limiteCliquesFinal: // 5º clique
-                    botaoFinal.disabled = true;
-                    botaoFinal.textContent = "Carregando Final...";
-                    ativarGoodEnding();
-                    break;
+            if(contadorCliquesFinal === 1) {
+                botaoFinal.classList.add('stage-1');
+                botaoFinal.textContent = `Próxima Etapa (1/${limiteCliquesFinal})`;
+            } else if (contadorCliquesFinal === 2) {
+                botaoFinal.classList.add('stage-2');
+                botaoFinal.textContent = `Próxima Etapa (2/${limiteCliquesFinal})`;
+            } else if (contadorCliquesFinal === 3) {
+                botaoFinal.classList.add('stage-final', 'animacao-boom');
+                botaoFinal.textContent = `SURPRESA! (3/${limiteCliquesFinal})`;
+                setTimeout(() => botaoFinal.classList.remove('animacao-boom'), 600);
+            } else if (contadorCliquesFinal === 4) {
+                botaoFinal.classList.add('stage-final');
+                botaoFinal.textContent = `QUASE LÁ! (4/${limiteCliquesFinal})`;
+            } else {
+                botaoFinal.disabled = true;
+                botaoFinal.textContent = "Carregando Final...";
+                ativarGoodEnding();
             }
         }
 
-        // --- INICIALIZAÇÃO ---
         document.addEventListener('DOMContentLoaded', () => {
             gerarBolinhas();
             mostrarPagina(1);
@@ -645,8 +679,6 @@ h1 {
         });
     </script>
 </body>
-
-
 </html>
 
 
